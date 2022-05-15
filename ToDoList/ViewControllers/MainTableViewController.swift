@@ -9,7 +9,7 @@ import UIKit
 
 class MainTableViewController: UITableViewController {
     
-    var tasks: [String] = ["Get up", "Brash your teath", "Make breakfast"]
+    var tasks: [String] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,7 +24,24 @@ class MainTableViewController: UITableViewController {
     }
 
     @objc func addTask() {
-        
+        taskAlertController(title: "New Task", message: "Please add a new task", style: .alert)
+    }
+    
+    func taskAlertController(title: String, message: String, style: UIAlertController.Style) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: style)
+        let addingTask = UIAlertAction(title: "Save", style: .default) { _ in
+            let textField = alertController.textFields?.first
+            guard let newTask = textField?.text else { return }
+            if newTask != "" {
+                self.tasks.insert(newTask, at: 0)
+                self.tableView.reloadData()
+            }
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        alertController.addTextField { _ in }
+        alertController.addAction(cancelAction)
+        alertController.addAction(addingTask)
+        present(alertController, animated: true)
     }
     
     // MARK: - Table view data source
@@ -49,7 +66,7 @@ class MainTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 0 {
-            return "Morning"
+            return "Tasks"
         }
         return ""
     }
